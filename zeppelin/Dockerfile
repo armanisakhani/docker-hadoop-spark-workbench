@@ -3,7 +3,7 @@ MAINTAINER Ivan Ermilov <ivan.s.ermilov@gmail.com>
 
 ENV APACHE_SPARK_VERSION 2.1.0
 ENV APACHE_HADOOP_VERSION 2.8.0
-ENV ZEPPELIN_VERSION 0.7.2
+ENV ZEPPELIN_VERSION 0.8.0
 
 RUN apt-get update && apt-get install wget
 RUN set -x \
