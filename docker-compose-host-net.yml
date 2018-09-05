@@ -1,0 +1,89 @@
+version: '2' 
+services:
+  namenode:
+    image: bde2020/hadoop-namenode:1.1.0-hadoop2.8-java8
+    container_name: namenode
+    volumes:
+      - ./data/namenode:/hadoop/dfs/name
+    environment:
+      - CLUSTER_NAME=test
+    env_file:
+      - ./hadoop.env
+    ports:
+      - 50070:50070
+    network_mode: "host"
+  datanode:
+    image: bde2020/hadoop-datanode:1.1.0-hadoop2.8-java8
+    depends_on:
+      - namenode
+    container_name: datanode
+    volumes:
+      - ./data/datanode:/hadoop/dfs/data
+    env_file:
+      - ./hadoop.env
+    network_mode: "host"
+    ports:
+      - 50075:50075
+  spark-master:
+    build: ./spark/master
+    container_name: spark-master
+    ports:
+      - 8080:8080
+      - 7077:7077
+    env_file:
+      - ./hadoop.env
+    depends_on:
+      - namenode
+      - datanode
+    network_mode: "host"
+  spark-worker:
+    build: ./spark/worker
+    environment:
+      - SPARK_MASTER=spark://spark-master:7077
+    env_file:
+      - ./hadoop.env
+    depends_on:
+      - spark-master
+    ports:
+      - 8081:8081
+    network_mode: "host"
+  spark-notebook:
+    image: bde2020/spark-notebook:2.1.0-hadoop2.8-hive
+    container_name: spark-notebook
+    env_file:
+      - ./hadoop.env
+    ports:
+      - 9001:9001
+    depends_on:
+      - spark-master
+      - namenode
+    environment:
+      CORE_CONF_fs_defaultFS: "hdfs://namenode:54310"
+      SPARK_MASTER: "spark://spark-master:7077"
+      MASTER: "spark://spark-master:7077"
+    network_mode: "host"
+  hue:
+    image: bde2020/hdfs-filebrowser:3.11
+    ports:
+      - 8088:8088
+    environment:
+      - NAMENODE_HOST=namenode
+    networks:
+      - spark-net
+  zeppelin:
+    build: ./zeppelin
+    ports:
+      - 9090:9090
+    volumes:
+      - ./notebook:/opt/zeppelin/notebook
+      - ./config_files/zeppelin/zeppelin-site.xml:/opt/zeppelin/conf/zeppelin-site.xml
+      - ./config_files/zeppelin/shiro.ini:/opt/zeppelin/conf/shiro.ini
+    environment:
+      CORE_CONF_fs_defaultFS: "hdfs://namenode:54310"
+      SPARK_MASTER: "spark://spark-master:7077"
+      MASTER: "spark://spark-master:7077"
+    depends_on:
+      - spark-master
+      - namenode
+    network_mode: "host"
+
