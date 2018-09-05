@@ -10,9 +10,10 @@ RUN ./opt/anaconda.sh -b
 RUN /root/anaconda3/bin/conda install -y -q ipython notebook
 
 #Environment vaiables for Spark to use Anaconda Python and iPython notebook
-ENV PYSPARK_PYTHON /root/anaconda3/bin/python3
-ENV PYSPARK_DRIVER_PYTHON /root/anaconda3/bin/ipython3
-RUN export PATH=$PATH:/root/anaconda3/bin/
+RUN ln -s /root/anaconda3/bin/ipython3 /usr/bin/python3
+ENV PYSPARK_PYTHON /usr/bin/python3
+ENV PYSPARK_DRIVER_PYTHON /usr/bin/python3
+ENV PATH /root/anaconda3/bin/:$PATH
 
 # ENV PYSPARK_DRIVER_PYTHON_OPTS "notebook --no-browser --port=8888 --ip='*'"
 
