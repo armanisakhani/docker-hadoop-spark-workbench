@@ -39,7 +39,7 @@ services:
   spark-worker:
     build: ./spark/worker
     environment:
-      - SPARK_MASTER=spark://spark-master:7077
+      - SPARK_MASTER=spark://mohtaseb:7077
     env_file:
       - ./hadoop.env
     depends_on:
@@ -58,9 +58,9 @@ services:
       - spark-master
       - namenode
     environment:
-      CORE_CONF_fs_defaultFS: "hdfs://namenode:54310"
-      SPARK_MASTER: "spark://spark-master:7077"
-      MASTER: "spark://spark-master:7077"
+      CORE_CONF_fs_defaultFS: "hdfs://mohtaseb:54310"
+      SPARK_MASTER: "spark://mohtaseb:7077"
+      MASTER: "spark://mohtaseb:7077"
     network_mode: "host"
   hue:
     image: bde2020/hdfs-filebrowser:3.11
@@ -78,9 +78,9 @@ services:
       - ./config_files/zeppelin/zeppelin-site.xml:/opt/zeppelin/conf/zeppelin-site.xml
       - ./config_files/zeppelin/shiro.ini:/opt/zeppelin/conf/shiro.ini
     environment:
-      CORE_CONF_fs_defaultFS: "hdfs://namenode:54310"
-      SPARK_MASTER: "spark://spark-master:7077"
-      MASTER: "spark://spark-master:7077"
+      CORE_CONF_fs_defaultFS: "hdfs://mohtaseb:54310"
+      SPARK_MASTER: "spark://mohtaseb:7077"
+      MASTER: "spark://mohtaseb:7077"
     depends_on:
       - spark-master
       - namenode
