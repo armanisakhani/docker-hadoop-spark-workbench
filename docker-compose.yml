@@ -27,7 +27,7 @@ services:
     ports:
       - 50075:50075
   spark-master:
-    image: bde2020/spark-master:2.1.0-hadoop2.8-hive-java8
+    build: ./spark/master
     container_name: spark-master
     ports:
       - 8080:8080
@@ -40,7 +40,7 @@ services:
     networks:
       - spark-net
   spark-worker:
-    image: bde2020/spark-worker:2.1.0-hadoop2.8-hive-java8
+    build: ./spark/worker
     environment:
       - SPARK_MASTER=spark://spark-master:7077
     env_file:
@@ -78,7 +78,7 @@ services:
   zeppelin:
     build: ./zeppelin
     ports:
-      - 6060:6060
+      - 9090:9090
     volumes:
       - ./notebook:/opt/zeppelin/notebook
       - ./config_files/zeppelin/zeppelin-site.xml:/opt/zeppelin/conf/zeppelin-site.xml
