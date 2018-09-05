@@ -95,5 +95,5 @@ services:
 
 networks:
   spark-net:
-    external:
-      name: spark-net
+    external: true
+
