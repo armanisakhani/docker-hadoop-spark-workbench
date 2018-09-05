@@ -14,7 +14,7 @@ RUN set -x \
 
 ENV SPARK_SUBMIT_OPTIONS "--jars /opt/zeppelin/sansa-examples-spark-2016-12.jar"
 
-RUN /root/anaconda3/bin/conda install -y -c anaconda grpcio
+RUN conda install -y -c anaconda grpcio
 
 WORKDIR /opt/zeppelin
 

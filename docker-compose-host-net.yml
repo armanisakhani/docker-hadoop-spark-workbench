@@ -67,7 +67,7 @@ services:
     ports:
       - 8088:8088
     environment:
-      - NAMENODE_HOST=namenode
+      - NAMENODE_HOST=mohtaseb
     network_mode: "host"
   zeppelin:
     build: ./zeppelin
