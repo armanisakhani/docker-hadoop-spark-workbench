@@ -11,6 +11,7 @@ services:
       - ./hadoop-hive.env
     ports:
       - 50070:50070
+    network_mode: "host"
   datanode:
     image: bde2020/hadoop-datanode:1.1.0-hadoop2.8-java8
     depends_on:
@@ -22,6 +23,7 @@ services:
       - ./hadoop-hive.env
     ports:
       - 50075:50075
+    network_mode: "host"
   hive-server:
     image: bde2020/hive:2.1.0-postgresql-metastore
     container_name: hive-server
@@ -31,14 +33,17 @@ services:
       - "HIVE_CORE_CONF_javax_jdo_option_ConnectionURL=jdbc:postgresql://hive-metastore/metastore"
     ports:
       - "10000:10000"
+    network_mode: "host"
   hive-metastore:
     image: bde2020/hive:2.1.0-postgresql-metastore
     container_name: hive-metastore
     env_file:
       - ./hadoop-hive.env
     command: /opt/hive/bin/hive --service metastore
+    network_mode: "host"
   hive-metastore-postgresql:
     image: bde2020/hive-metastore-postgresql:2.1.0
+    network_mode: "host"
   spark-master:
     build: ./spark/master
     container_name: spark-master
@@ -50,16 +55,18 @@ services:
     depends_on:
       - namenode
       - datanode
+    network_mode: "host"
   spark-worker:
     build: ./spark/worker
     environment:
-      - SPARK_MASTER=spark://spark-master:7077
+      - SPARK_MASTER=spark://mohtaseb:7077
     env_file:
       - ./hadoop-hive.env
     depends_on:
       - spark-master
     ports:
       - 8081:8081
+    network_mode: "host"
   spark-notebook:
     image: bde2020/spark-notebook:2.1.0-hadoop2.8-hive
     container_name: spark-notebook
@@ -71,13 +78,15 @@ services:
       - spark-master
       - namenode
     environment:
-      CORE_CONF_fs_defaultFS: "hdfs://namenode:54310"
-      SPARK_MASTER: "spark://spark-master:7077"
-      MASTER: "spark://spark-master:7077"
+      CORE_CONF_fs_defaultFS: "hdfs://mohtaseb:54310"
+      SPARK_MASTER: "spark://mohtaseb:7077"
+      MASTER: "spark://mohtaseb:7077"
+    network_mode: "host"
   hue:
     image: bde2020/hdfs-filebrowser:3.11
     container_name: hue
     ports:
       - 8088:8088
     environment:
-      - NAMENODE_HOST=namenode
+      - NAMENODE_HOST=mohtaseb
+    network_mode: "host"
